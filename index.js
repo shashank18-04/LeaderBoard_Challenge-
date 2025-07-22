@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const apiRoutes = require('./routes/api');
-const User = require('./models/User'); // Import User model to use for seeding
+const User = require('./models/User');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -11,12 +11,15 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-const MONGO_URI = 'mongodb+srv://shasise22144:XcHLfPoKvbJxLAh8@cluster0.em5aim6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// Use the environment variable from Render, or fall back to a local one if not found.
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/leaderboardDB';
+
+// Connect to MongoDB
+mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log('MongoDB connected...');
-    // This function will run on every server start
+    // The seedDatabase function is called here to add initial users if the DB is empty.
     seedDatabase();
   })
   .catch((err) => console.log('MongoDB connection error:', err));
@@ -41,19 +44,16 @@ async function seedDatabase() {
       const nouns = ['Jaguar', 'Phoenix', 'Spectre', 'Golem', 'Voyager', 'Ninja', 'Dragon', 'Flare', 'Hunter', 'Warden'];
       
       const usersToCreate = [];
-      const createdNames = new Set(); // To avoid duplicate names in a single run
+      const createdNames = new Set();
 
-      // Loop until we have 10 unique names
       while(usersToCreate.length < 10) {
           const name = `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${nouns[Math.floor(Math.random() * nouns.length)]}`;
-          // Ensure the generated name is unique for this seeding session
           if (!createdNames.has(name)) {
               createdNames.add(name);
               usersToCreate.push({ name, points: 0 });
           }
       }
 
-      // Insert all the new users into the database at once
       await User.insertMany(usersToCreate);
       console.log('Database seeded successfully with 10 users.');
     } else {
