@@ -14,8 +14,3 @@ services:
     buildCommand: "npm install"
     # The command to run to start the application.
     startCommand: "node index.js"
-    # Defines the environment variables.
-    envVars:
-      # We define the key for our database connection string here.
-      # The actual value will be set securely in the Render dashboard.
-      - key: MONGO_URI
