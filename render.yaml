@@ -1,0 +1,21 @@
+services:
+  # This defines a single service.
+  - type: web
+    # A name for your service. You can change this.
+    name: leaderboard-backend
+    # Specifies the runtime environment.
+    env: node
+    # The geographical region to deploy in.
+    # Other options include: oregon, frankfurt
+    region: singapore
+    # Use Render's free plan.
+    plan: free
+    # The command to run to install dependencies.
+    buildCommand: "npm install"
+    # The command to run to start the application.
+    startCommand: "node index.js"
+    # Defines the environment variables.
+    envVars:
+      # We define the key for our database connection string here.
+      # The actual value will be set securely in the Render dashboard.
+      - key: MONGO_URI
